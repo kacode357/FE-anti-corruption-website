@@ -1,3 +1,4 @@
+// hooks/useTTS.ts
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
@@ -6,65 +7,140 @@ export type TTSLang = "vi" | "en"
 
 export interface UseTTSOptions {
   lang: TTSLang
-  defaultRate?: number // 0.1 - 10
-  defaultPitch?: number // 0 - 2
-  defaultVolume?: number // 0 - 1
+  defaultRate?: number
+  defaultPitch?: number
+  defaultVolume?: number
+  preferredVoiceNames?: string[]
 }
 
-export function useTTS({ lang, defaultRate = 1, defaultPitch = 1, defaultVolume = 1 }: UseTTSOptions) {
+const DEFAULT_VI_PREFERRED = [
+  "Google Vietnamese",
+  "Microsoft Hoai My Online (Natural) - Vietnamese (Vietnam)",
+  "Microsoft HoaiMy Online (Natural) - Vietnamese (Vietnam)",
+  "Microsoft Mai Online (Natural) - Vietnamese (Vietnam)",
+  "vi-VN",
+  "Linh",
+  "Vietnamese",
+]
+
+export function useTTS({
+  lang,
+  defaultRate = 1,
+  defaultPitch = 1,
+  defaultVolume = 1,
+  preferredVoiceNames,
+}: UseTTSOptions) {
   const synthRef = useRef<SpeechSynthesis | null>(typeof window !== "undefined" ? window.speechSynthesis : null)
+
+  // KHỞI TẠO BẰNG GIÁ TRỊ MẶC ĐỊNH (KHÔNG ĐỘNG TỚI localStorage Ở ĐÂY)
+  const [rate, setRate] = useState<number>(defaultRate)
+  const [pitch, setPitch] = useState<number>(defaultPitch)
+  const [volume, setVolume] = useState<number>(defaultVolume)
+
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([])
   const [voiceURI, setVoiceURI] = useState<string | null>(null)
-  const [rate, setRate] = useState<number>(() => Number(localStorage.getItem("tts_rate") || defaultRate))
-  const [pitch, setPitch] = useState<number>(() => Number(localStorage.getItem("tts_pitch") || defaultPitch))
-  const [volume, setVolume] = useState<number>(() => Number(localStorage.getItem("tts_volume") || defaultVolume))
   const [speaking, setSpeaking] = useState(false)
   const [paused, setPaused] = useState(false)
 
-  // Load voices (some browsers load async)
+  // ĐỌC localStorage TRÊN CLIENT SAU KHI MOUNT
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const r = Number(window.localStorage.getItem("tts_rate"))
+    const p = Number(window.localStorage.getItem("tts_pitch"))
+    const v = Number(window.localStorage.getItem("tts_volume"))
+    if (!Number.isNaN(r) && r) setRate(r)
+    if (!Number.isNaN(p) && p) setPitch(p)
+    if (!Number.isNaN(v) && v >= 0) setVolume(v)
+  }, [])
+
+  // LẤY VOICE (CLIENT-ONLY)
   useEffect(() => {
     if (!synthRef.current) return
     const load = () => setVoices(synthRef.current!.getVoices())
     load()
-    window.speechSynthesis.onvoiceschanged = load
+    const handler = load
+    // @ts-ignore
+    window.speechSynthesis.onvoiceschanged = handler
     return () => {
+      // @ts-ignore
       window.speechSynthesis.onvoiceschanged = null
     }
   }, [])
 
-  // Filter voices by lang
+  // LỌC THEO NGÔN NGỮ
   const langPrefix = lang === "vi" ? "vi" : "en"
   const filteredVoices = useMemo(
-    () => voices.filter(v => v.lang?.toLowerCase().startsWith(langPrefix)),
+    () => voices.filter((v) => v.lang?.toLowerCase().startsWith(langPrefix)),
     [voices, langPrefix]
   )
 
-  // Pick a default voice when lang changes
+  // CHỌN GIỌNG ƯU TIÊN
+  const bestVoiceURI = useMemo(() => {
+    if (!filteredVoices.length) return null
+    const prefers =
+      (lang === "vi"
+        ? preferredVoiceNames && preferredVoiceNames.length
+          ? preferredVoiceNames
+          : DEFAULT_VI_PREFERRED
+        : preferredVoiceNames) || []
+    for (const key of prefers) {
+      const found = filteredVoices.find(
+        (v) => v.name?.toLowerCase() === key.toLowerCase() || v.voiceURI?.toLowerCase() === key.toLowerCase()
+      )
+      if (found) return found.voiceURI
+    }
+    for (const key of prefers) {
+      const found = filteredVoices.find(
+        (v) => v.name?.toLowerCase().includes(key.toLowerCase()) || v.voiceURI?.toLowerCase().includes(key.toLowerCase())
+      )
+      if (found) return found.voiceURI
+    }
+    return filteredVoices[0].voiceURI
+  }, [filteredVoices, preferredVoiceNames, lang])
+
+  // SET VOICE LẦN ĐẦU
   useEffect(() => {
-    if (!voiceURI && filteredVoices.length) setVoiceURI(filteredVoices[0].voiceURI)
-  }, [filteredVoices, voiceURI])
+    if (!voiceURI && bestVoiceURI) setVoiceURI(bestVoiceURI)
+  }, [bestVoiceURI, voiceURI])
 
-  // Persist settings
-  useEffect(() => localStorage.setItem("tts_rate", String(rate)), [rate])
-  useEffect(() => localStorage.setItem("tts_pitch", String(pitch)), [pitch])
-  useEffect(() => localStorage.setItem("tts_volume", String(volume)), [volume])
+  // PERSIST SETTINGS (CLIENT-ONLY)
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    window.localStorage.setItem("tts_rate", String(rate))
+  }, [rate])
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    window.localStorage.setItem("tts_pitch", String(pitch))
+  }, [pitch])
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    window.localStorage.setItem("tts_volume", String(volume))
+  }, [volume])
 
-  // Core actions
+  // HÀM ĐỌC
   const speak = (text: string) => {
     if (!synthRef.current || !text) return
-    // stop any previous
     synthRef.current.cancel()
     const utter = new SpeechSynthesisUtterance(text)
     utter.lang = lang === "vi" ? "vi-VN" : "en-US"
-    const v = filteredVoices.find(v => v.voiceURI === voiceURI) || filteredVoices[0]
+    const v =
+      filteredVoices.find((v) => v.voiceURI === voiceURI) ||
+      filteredVoices.find((v) => v.voiceURI === bestVoiceURI) ||
+      filteredVoices[0]
     if (v) utter.voice = v
     utter.rate = rate
     utter.pitch = pitch
     utter.volume = volume
-    utter.onend = () => { setSpeaking(false); setPaused(false) }
+    utter.onend = () => {
+      setSpeaking(false)
+      setPaused(false)
+    }
     utter.onpause = () => setPaused(true)
     utter.onresume = () => setPaused(false)
-    utter.onerror = () => { setSpeaking(false); setPaused(false) }
+    utter.onerror = () => {
+      setSpeaking(false)
+      setPaused(false)
+    }
     synthRef.current.speak(utter)
     setSpeaking(true)
     setPaused(false)
@@ -89,12 +165,20 @@ export function useTTS({ lang, defaultRate = 1, defaultPitch = 1, defaultVolume 
   }
 
   return {
-    speaking, paused,
-    rate, setRate,
-    pitch, setPitch,
-    volume, setVolume,
+    speaking,
+    paused,
+    rate,
+    setRate,
+    pitch,
+    setPitch,
+    volume,
+    setVolume,
     voices: filteredVoices,
-    voiceURI, setVoiceURI,
-    speak, stop, pause, resume,
+    voiceURI,
+    setVoiceURI,
+    speak,
+    stop,
+    pause,
+    resume,
   }
 }

@@ -1,3 +1,4 @@
+// components/Content5_Responsibility.tsx
 "use client"
 
 import { motion } from "framer-motion"
@@ -13,7 +14,9 @@ export default function Content5_Responsibility({ language }: Content5Responsibi
   // ===== Text-to-Speech payload (thuần chữ, không JSX) =====
   const getTtsText = () => {
     const title = `${t.titleTop}. ${t.titleBottom}.`
-    const bullets = t.plainBullets.map((b, i) => `${language === "vi" ? "Ý" : "Point"} ${i + 1}: ${b}.`).join(" ")
+    const bullets = t.plainBullets
+      .map((b, i) => `${language === "vi" ? "Ý" : "Point"} ${i + 1}: ${b}.`)
+      .join(" ")
     const note = t.note
     return [title, bullets, note].join(" ")
   }
@@ -46,11 +49,12 @@ export default function Content5_Responsibility({ language }: Content5Responsibi
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
-          className="col-span-12 md:col-span-2 lg:col-span-3 order-2 md:order-1"
+          className="col-span-12 md:col-span-3 order-3 md:order-1"
         >
-          <div className="overflow-hidden rounded-2xl border border-sky-100 bg-white shadow-sm h-64">
-            <img src="/content5_1.png" alt="" className="w-full h-full object-cover" />
-          </div>
+          <Figure
+            src="/content5_1.png"
+            alt={language === "vi" ? "Minh họa trách nhiệm công dân" : "Citizens’ responsibilities illustration"}
+          />
         </motion.div>
 
         {/* content list */}
@@ -59,24 +63,19 @@ export default function Content5_Responsibility({ language }: Content5Responsibi
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45, delay: 0.05 }}
-          className="col-span-12 md:col-span-8 lg:col-span-6 order-1 md:order-2"
+          className="col-span-12 md:col-span-6 order-1 md:order-2"
         >
           <ul className="space-y-4 text-lg md:text-xl">
             {t.bullets.map((b, i) => (
               <li key={i} className="flex items-start gap-3">
-                {/* bullet dot */}
                 <span className="mt-2 inline-block h-2.5 w-2.5 flex-none rounded-full bg-sky-600" />
-                {/* text box (allow rich text) */}
                 <p className="text-gray-900 leading-relaxed">{b}</p>
               </li>
             ))}
           </ul>
 
-          {/* tip line */}
           <div className="mt-6 rounded-xl border border-sky-100 bg-white/80 p-4 shadow-sm">
-            <p className="text-sm md:text-base text-sky-700 font-medium">
-              {t.note}
-            </p>
+            <p className="text-sm md:text-base text-sky-700 font-medium">{t.note}</p>
           </div>
         </motion.div>
 
@@ -86,14 +85,27 @@ export default function Content5_Responsibility({ language }: Content5Responsibi
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
-          className="col-span-12 md:col-span-2 lg:col-span-3 order-3"
+          className="col-span-12 md:col-span-3 order-2 md:order-3"
         >
-          <div className="overflow-hidden rounded-2xl border border-sky-100 bg-white shadow-sm h-64">
-            <img src="/content5_2.png" alt="" className="w-full h-full object-cover" />
-          </div>
+          <Figure src="/content5_2.png" alt="" />
         </motion.div>
       </div>
     </section>
+  )
+}
+
+/** Ảnh tự do (không cố định), viền vàng */
+function Figure({ src, alt = "" }: { src: string; alt?: string }) {
+  return (
+    <div className="mx-auto w-full overflow-hidden rounded-2xl border-2 border-yellow-400 bg-white shadow-sm">
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        className="block w-full h-auto object-contain"
+      />
+    </div>
   )
 }
 
@@ -141,7 +153,9 @@ const translations = {
     titleTop: "CITIZENS’ RESPONSIBILITIES",
     titleBottom: "IN ANTI-CORRUPTION",
     bullets: [
-      <> <strong>Comply</strong> with anti-corruption laws </>,
+      <>
+        <strong>Comply</strong> with anti-corruption laws
+      </>,
       <>
         <strong>Detect & report</strong> corrupt acts{" "}
         <span className="text-sky-700 font-semibold">→ protected & rewarded</span>

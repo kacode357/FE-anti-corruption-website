@@ -148,27 +148,27 @@ export default function Content2_Causes({ language }: Content2CausesProps) {
 
         {/* RIGHT — Sticky image that changes with active group */}
         <div className="md:sticky md:top-24">
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, scale: 0.98, y: 8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.35 }}
-            className="overflow-hidden rounded-3xl border border-sky-100 bg-white/70 p-4 shadow-xl backdrop-blur"
-          >
-            <img
-              src={images[active % images.length]}
-              alt={`illustration ${active + 1}`}
-              className="mx-auto h-[420px] w-full max-w-md object-cover md:h-[520px]"
-            />
-          </motion.div>
+  <motion.div
+    key={active}
+    initial={{ opacity: 0, scale: 0.98, y: 8 }}
+    animate={{ opacity: 1, scale: 1, y: 0 }}
+    transition={{ duration: 0.35 }}
+    className="relative mx-auto w-full max-w-md overflow-hidden rounded-3xl
+               border-2 border-yellow-400 shadow-xl"
+  >
+    <img
+      src={images[active % images.length]}
+      alt={`illustration ${active + 1}`}
+      className="block w-full h-auto object-cover"
+    />
+  </motion.div>
 
-          {/* caption */}
-          <p className="mt-3 text-center text-xs text-gray-500">
-            {language === "vi"
-              ? "Ảnh minh họa sẽ thay đổi theo nhóm đang xem"
-              : "Illustration changes with the active group"}
-          </p>
-        </div>
+  <p className="mt-3 text-center text-xs text-gray-500">
+    {language === "vi"
+      ? "Ảnh minh họa sẽ thay đổi theo nhóm đang xem"
+      : "Illustration changes with the active group"}
+  </p>
+</div>
       </div>
     </section>
   )

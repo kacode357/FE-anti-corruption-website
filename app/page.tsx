@@ -49,7 +49,7 @@ export default function Home() {
     { id: 3, ...t.content3, icon: "⚠️", color: "from-cyan-400 to-cyan-600", image: "/warning-signs-and-broken-chains-representing-corru.jpg" },
     { id: 4, ...t.content4, icon: "⚖️", color: "from-sky-500 to-sky-700", image: "/scales-of-justice-and-government-building-represen.jpg" },
     { id: 5, ...t.content5, icon: "👥", color: "from-blue-500 to-blue-700", image: "/diverse-group-of-citizens-raising-hands-representi.jpg" },
-    { id: 6, ...t.content6, icon: "🎯", color: "from-cyan-500 to-cyan-700", image: "/target-with-arrows-and-action-plan-representing-pr.jpg" },
+    { id: 6, ...t.content6, icon: "🎯", color: "from-cyan-500 to-sky-700", image: "/target-with-arrows-and-action-plan-representing-pr.jpg" },
   ]
 
   const handleLearnMore = (contentId: number) => {
@@ -118,7 +118,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {contentItems.map((item, index) => (
               <motion.div key={item.id} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}>
-                <Card className="h-full hover:shadow-2xl transition-all duration-300 border-0 shadow-lg bg-white/90 backdrop-blur-sm hover:-translate-y-2">
+                <Card className="h-full hover:shadow-2xl transition-all duration-300 border-0 shadow-lg bg-white/90 backdrop-blur-sm hover:-translate-y-2 flex flex-col">
                   <div className="relative overflow-hidden rounded-t-lg">
                     <img src={item.image || "/placeholder.svg"} alt={item.title} className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105" />
                     <div className="absolute top-4 right-4">
@@ -128,12 +128,14 @@ export default function Home() {
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl font-bold text-sky-700">{item.title}</CardTitle>
                   </CardHeader>
-                  <CardContent className="pt-0">
-                    <CardDescription className="text-gray-600 mb-4 leading-relaxed">{item.description}</CardDescription>
-                    <div className="text-sm text-sky-600 font-medium mb-6 bg-sky-50 p-3 rounded-lg">{item.details}</div>
+                  <CardContent className="pt-0 flex flex-col justify-between flex-grow">
+                    <div>
+                      <CardDescription className="text-gray-600 mb-4 leading-relaxed">{item.description}</CardDescription>
+                      <div className="text-sm text-sky-600 font-medium mb-6 bg-sky-50 p-3 rounded-lg">{item.details}</div>
+                    </div>
                     <Button
                       onClick={() => handleLearnMore(item.id)}
-                      className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-medium py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+                      className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-medium py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl mt-auto"
                     >
                       {t.learnMore} →
                     </Button>

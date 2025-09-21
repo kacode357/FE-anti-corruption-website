@@ -1,6 +1,6 @@
 export const homeTranslations = {
   vi: {
-    mainTitle: "Chủ nghĩa Xã hội Khoa học",
+    mainTitle: "CHỦ NGHĨA XÃ HỘI KHOA HỌC",
     subtitle:
       "Xây dựng Nhà nước pháp quyền xã hội chủ nghĩa gắn với công tác phòng, chống tham nhũng và phát huy trách nhiệm công dân",
     heroDescription:
@@ -17,47 +17,45 @@ export const homeTranslations = {
       citizens: "Công dân tham gia giám sát",
     },
     content1: {
-      title: "Khái niệm về Tham nhũng",
+      title: "Khái niệm về tham nhũng",
       description:
         "Tìm hiểu về định nghĩa, bản chất và các hình thức biểu hiện của tham nhũng trong xã hội hiện đại. Phân tích các loại hình tham nhũng phổ biến và cách nhận biết.",
       details: "Bao gồm: Tham ô tài sản, nhận hối lộ, lạm dụng chức vụ quyền hạn",
     },
-    // PHẦN 2: cập nhật thành CÁC HÀNH VI THAM NHŨNG
     content2: {
-      title: "CÁC HÀNH VI THAM NHŨNG",
+      title: "Các hành vi tham nhũng",
       description:
         "Danh mục các hành vi tham nhũng theo pháp luật Việt Nam; đặc điểm chính và cách nhận diện trong thực tiễn.",
       details:
         "Bao gồm: Tham ô, nhận hối lộ, lạm dụng chức vụ quyền hạn, nhũng nhiễu, lạm quyền, sử dụng trái phép tài sản công…",
     },
-    // PHẦN 3: cập nhật thành NGUYÊN NHÂN CỦA HÀNH VI THAM NHŨNG
     content3: {
-      title: "NGUYÊN NHÂN CỦA HÀNH VI THAM NHŨNG",
+      title: "Nguyên nhân của hành vi tham nhũng",
       description:
         "Phân tích các nguyên nhân sâu xa dẫn đến hành vi tham nhũng trong hệ thống chính trị – xã hội; nhận diện yếu tố chủ quan và khách quan.",
       details: "Nguyên nhân chủ quan, khách quan và các yếu tố môi trường",
     },
     content4: {
-      title: "Ý nghĩa Phòng chống Tham nhũng",
+      title: "Ý nghĩa của phòng, chống tham nhũng",
       description:
         "Làm rõ tầm quan trọng của việc phòng chống tham nhũng trong xây dựng nhà nước pháp quyền xã hội chủ nghĩa và phát triển đất nước.",
       details: "Bảo vệ tài sản công, nâng cao hiệu quả quản lý nhà nước",
     },
     content5: {
-      title: "Trách nhiệm của Công dân",
+      title: "Trách nhiệm của công dân",
       description:
         "Vai trò và trách nhiệm của mỗi công dân trong cuộc đấu tranh phòng chống tham nhũng. Quyền và nghĩa vụ của người dân trong giám sát.",
       details: "Giám sát, tố giác, tuyên truyền và nâng cao nhận thức",
     },
     content6: {
-      title: "Hành động Thiết thực",
+      title: "Liên hệ: Hành động thiết thực",
       description:
         "Các biện pháp và hành động thiết thực để góp phần xây dựng xã hội trong sạch, minh bạch. Hướng dẫn cụ thể cho công dân.",
       details: "Báo cáo vi phạm, tham gia giám sát cộng đồng",
     },
   },
   en: {
-    mainTitle: "Scientific Socialism",
+    mainTitle: "SCIENTIFIC SOCIALISM",
     subtitle:
       "Building a Socialist Rule of Law State linked with Anti-Corruption Work and Promoting Citizens' Responsibilities",
     heroDescription:
@@ -79,35 +77,33 @@ export const homeTranslations = {
         "Understanding the definition, nature and forms of corruption in modern society. Analyzing common types of corruption and how to identify them.",
       details: "Including: Embezzlement, bribery, abuse of position and power",
     },
-    // SECTION 2: updated to ACTS OF CORRUPTION
     content2: {
-      title: "ACTS OF CORRUPTION",
+      title: "Acts of corruption",
       description:
         "Catalogue of corrupt acts under Vietnamese law; key features and practical identification tips.",
       details:
         "Including: Embezzlement, bribery, abuse of position/power, harassment, exceeding authority, illegal use of public assets…",
     },
-    // SECTION 3: updated to CAUSES OF CORRUPTION
     content3: {
-      title: "CAUSES OF CORRUPTION",
+      title: "Causes of corruption",
       description:
         "Analyzing the root causes leading to corrupt acts within political and social systems; covering subjective and objective factors.",
       details: "Subjective, objective causes and environmental factors",
     },
     content4: {
-      title: "Significance of Anti-Corruption",
+      title: "Significance of anti-corruption",
       description:
         "Clarifying the importance of anti-corruption in building a socialist rule of law state and national development.",
       details: "Protecting public property, improving state management efficiency",
     },
     content5: {
-      title: "Citizens' Responsibility",
+      title: "Citizens' responsibility",
       description:
         "The role and responsibility of each citizen in the fight against corruption. Rights and obligations of people in monitoring.",
       details: "Monitoring, reporting, promoting and raising awareness",
     },
     content6: {
-      title: "Practical Actions",
+      title: "Practical actions",
       description:
         "Practical measures and actions to contribute to building a clean, transparent society. Specific guidance for citizens.",
       details: "Reporting violations, participating in community monitoring",
