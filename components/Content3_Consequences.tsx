@@ -1,121 +1,372 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import TTSBar from "@/components/tts/TTSBar"
 
-interface Content3ConsequencesProps {
+interface Content3Props {
   language: "vi" | "en"
 }
 
-export default function Content3_Consequences({ language }: Content3ConsequencesProps) {
-  const translations = {
-    vi: {
-      title: "Tác hại của Tham nhũng",
-      content: "Tham nhũng gây ra những hậu quả nghiêm trọng cho xã hội và nhà nước.",
-      impacts: [
-        {
-          title: "Tác hại đối với kinh tế",
-          description: "Làm méo mó cơ chế thị trường, cản trở đầu tư và phát triển kinh tế",
-        },
-        {
-          title: "Tác hại đối với chính trị",
-          description: "Làm suy giảm uy tín của Đảng và Nhà nước, mất lòng tin của nhân dân",
-        },
-        {
-          title: "Tác hại đối với xã hội",
-          description: "Gia tăng bất bình đẳng xã hội, làm suy thoái đạo đức xã hội",
-        },
-      ],
-    },
-    en: {
-      title: "Consequences of Corruption",
-      content: "Corruption causes serious consequences for society and the state.",
-      impacts: [
-        {
-          title: "Economic impact",
-          description: "Distorts market mechanisms, hinders investment and economic development",
-        },
-        {
-          title: "Political impact",
-          description: "Reduces the prestige of the Party and State, loses people's trust",
-        },
-        {
-          title: "Social impact",
-          description: "Increases social inequality, causes moral degradation in society",
-        },
-      ],
-    },
+export default function Content3_Consequences({ language }: Content3Props) {
+  const t = translations[language]
+  const [showExample, setShowExample] = useState(false)
+
+  // ===== Text-to-Speech payload =====
+  const getTtsText = () => {
+    const parts: string[] = [
+      t.title,
+      t.intro,
+      `${t.subjective.title}: ${t.subjective.items.join(". ")}`,
+      `${t.objective.title}: ${t.objective.items.join(". ")}`,
+      t.sources.title,
+      t.example.caseTitle,
+      t.example.summary,
+      `${t.impacts.title}:`,
+      ...t.impacts.groups.flatMap((g) => [`${g.label}: ${g.points.join(". ")}`]),
+    ]
+    return parts.join(". ")
   }
 
-  const t = translations[language]
-
-  const icons = [
-    // Economic impact icon
-    <svg key="economic" className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z" />
-    </svg>,
-    // Political impact icon
-    <svg key="political" className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-    </svg>,
-    // Social impact icon
-    <svg key="social" className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.5 1.5 0 0 0 18.54 8H16c-.8 0-1.54.37-2.01.99l-2.54 3.38c-.36.48-.85.63-1.45.63s-1.09-.15-1.45-.63L6.01 8.99C5.54 8.37 4.8 8 4 8H1.46c-.8 0-1.3.63-1.42 1.37L2.5 16H5v6h2v-6h2v6h2v-6h2v6h3z" />
-    </svg>,
-  ]
-
   return (
-    <div>
+    <section className="max-w-7xl mx-auto px-4 py-14">
+      {/* TTS Bar */}
+      <TTSBar lang={language} getText={getTtsText} className="mb-6" />
+
+      {/* Title */}
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: -14 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
         viewport={{ once: true }}
-        className="text-center mb-12"
+        transition={{ duration: 0.5 }}
+        className="text-center mb-8"
       >
-        <h2 className="text-4xl font-bold text-sky-700 mb-6">{t.title}</h2>
-        <p className="text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto">{t.content}</p>
-      </motion.div>
-
-      <div className="grid lg:grid-cols-3 gap-8">
-        {t.impacts.map((impact, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 + index * 0.2 }}
-            viewport={{ once: true }}
-            className="group"
-          >
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-orange-100 hover:shadow-lg hover:border-orange-200 transition-all duration-300 h-full">
-              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
-                <div className="text-white">{icons[index]}</div>
-              </div>
-
-              <h3 className="text-xl font-bold text-orange-700 mb-4 text-center">{impact.title}</h3>
-              <p className="text-gray-700 leading-relaxed text-center">{impact.description}</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.8 }}
-        viewport={{ once: true }}
-        className="mt-12 bg-orange-50 border border-orange-200 rounded-2xl p-8 text-center"
-      >
-        <div className="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
-          </svg>
-        </div>
-        <p className="text-orange-800 font-semibold text-lg">
-          {language === "vi"
-            ? "Tham nhũng là mối đe dọa nghiêm trọng đối với sự phát triển bền vững của đất nước!"
-            : "Corruption is a serious threat to the sustainable development of the country!"}
+        <h2 className="text-3xl md:text-4xl font-extrabold text-sky-700">
+          {t.title}
+        </h2>
+        <p className="mx-auto mt-3 max-w-3xl text-gray-600">
+          {t.intro}
         </p>
       </motion.div>
+
+      {/* Causes: 2 columns */}
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* Subjective */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="rounded-2xl border border-sky-100 bg-white/80 shadow-sm"
+        >
+          <Ribbon>{t.subjective.title}</Ribbon>
+          <ul className="space-y-3 p-5">
+            {t.subjective.items.map((txt, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <Triangle />
+                <Box>{txt}</Box>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+
+        {/* Objective */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="rounded-2xl border border-sky-100 bg-white/80 shadow-sm"
+        >
+          <Ribbon>{t.objective.title}</Ribbon>
+          <ul className="space-y-3 p-5">
+            {t.objective.items.map((txt, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <Triangle />
+                <Box>{txt}</Box>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+      </div>
+
+      {/* ======= VỤ ÁN: NỔI BẬT NGUỒN THAM KHẢO ======= */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="mt-10 rounded-2xl border border-sky-200 bg-gradient-to-br from-sky-50 to-blue-50 p-5 shadow"
+      >
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <h3 className="text-lg md:text-xl font-extrabold text-sky-700">
+            {t.sources.title}
+          </h3>
+          <span className="hidden md:inline-block rounded-full bg-sky-600/10 px-3 py-1 text-xs font-semibold text-sky-700">
+            {t.sources.badge}
+          </span>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {t.sources.links.map((link, i) => (
+            <a
+              key={i}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-start gap-3 rounded-xl border border-sky-100 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+              aria-label={link.title}
+            >
+              {/* icon */}
+              <div className="mt-0.5 flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-sky-600 text-white">
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M10 13a5 5 0 0 1 7 7l-2 2a5 5 0 0 1-7-7l1-1" />
+                  <path d="M14 11a5 5 0 0 0-7-7L5 6a5 5 0 0 0 7 7l2-2" />
+                </svg>
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-sky-700 group-hover:underline">
+                  {link.title}
+                </p>
+                <p className="truncate text-xs text-gray-500">{link.url}</p>
+              </div>
+              <span className="ml-auto mt-0.5 text-sky-600">↗</span>
+            </a>
+          ))}
+        </div>
+      </motion.div>
+      {/* ======= /VỤ ÁN ======= */}
+
+      {/* Example (collapsible) */}
+      <div className="mt-6">
+        <button
+          onClick={() => setShowExample((v) => !v)}
+          className="mx-auto flex items-center gap-2 rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-sky-700"
+        >
+          {showExample ? "−" : "+"} {t.example.toggle}
+        </button>
+
+        <AnimatePresence initial={false}>
+          {showExample && (
+            <motion.div
+              key="ex"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <div className="mt-5 grid gap-6 rounded-2xl border border-sky-100 bg-white/80 p-6 shadow-sm">
+                <div>
+                  <h4 className="text-lg font-bold text-sky-700">{t.example.caseTitle}</h4>
+                  <div className="mt-3 grid md:grid-cols-2 gap-4">
+                    <div className="rounded-xl border-2 border-dashed border-yellow-400 bg-white px-4 py-3">
+                      <p className="text-gray-800">{t.example.summary}</p>
+                    </div>
+                    <div className="rounded-xl border-2 border-dashed border-yellow-400 bg-white px-4 py-3">
+                      <ul className="list-disc pl-5 text-gray-800">
+                        {t.example.bullets.map((b, i) => (
+                          <li key={i} className="mb-1">{b}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Impacts compact cards */}
+                <div>
+                  <h5 className="mb-3 text-center text-xl font-extrabold text-sky-700">
+                    {t.impacts.title}
+                  </h5>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    {t.impacts.groups.map((g, i) => (
+                      <div
+                        key={i}
+                        className="rounded-xl border border-sky-100 bg-gradient-to-br from-sky-50 to-blue-50 p-4 shadow"
+                      >
+                        <p className="mb-2 text-sm font-semibold text-sky-700">• {g.label}</p>
+                        <ul className="space-y-1 text-sm text-gray-700">
+                          {g.points.map((p, j) => (
+                            <li key={j}>– {p}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </section>
+  )
+}
+
+/* ---------- Small UI pieces ---------- */
+function Ribbon({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="relative mx-auto mt-4 w-fit rounded-lg bg-sky-100 px-4 py-2 text-sm font-bold text-sky-700 shadow-sm">
+      {children}
+      <span className="absolute left-[-18px] top-1/2 -translate-y-1/2 h-0 w-0 border-y-8 border-y-transparent border-r-[18px] border-r-sky-100" />
+      <span className="absolute right-[-18px] top-1/2 -translate-y-1/2 h-0 w-0 border-y-8 border-y-transparent border-l-[18px] border-l-sky-100" />
     </div>
   )
+}
+function Triangle() {
+  return (
+    <div className="mt-2 h-0 w-0 border-y-[10px] border-y-transparent border-l-[16px] border-l-yellow-400" />
+  )
+}
+function Box({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex-1 rounded-lg border-2 border-dashed border-yellow-400 bg-white px-4 py-2">
+      <p className="text-gray-800">{children}</p>
+    </div>
+  )
+}
+
+/* ---------- i18n ---------- */
+const translations = {
+  vi: {
+    title: "NGUYÊN NHÂN CỦA HÀNH VI THAM NHŨNG",
+    intro:
+      "Nguyên nhân xuất phát từ cả yếu tố chủ quan (con người, tổ chức) và khách quan (thể chế, cơ chế quản lý, môi trường kinh tế - xã hội). Dưới đây là tóm tắt cô đọng, dễ kiểm tra.",
+    subjective: {
+      title: "Nguyên nhân chủ quan",
+      items: [
+        "Tổ chức, hoạt động, phân hoá chức năng trong hệ thống chính trị còn nhiều khiếm khuyết",
+        "Chưa phân hoá rõ trách nhiệm của cơ quan chuyên trách phòng, chống tham nhũng",
+        "Người đứng đầu chưa nhận thức đầy đủ, thiếu gương mẫu",
+        "Cơ chế, chính sách nội bộ và quy trình công vụ chưa hoàn thiện",
+        "Pháp luật PCTN chưa đủ mạnh, còn kẽ hở",
+        "Tuyên truyền – giáo dục còn hình thức, phong trào",
+      ],
+    },
+    objective: {
+      title: "Nguyên nhân khách quan",
+      items: [
+        "Tác động của mặt trái kinh tế thị trường và hội nhập",
+        "Hệ thống chính sách – pháp luật thiếu đồng bộ, nhất quán",
+        "Quản lý nhà nước một số lĩnh vực còn lỏng lẻo, hiệu quả thấp",
+        "Công tác quản lý cán bộ, đảng viên, công chức, viên chức còn hạn chế",
+        "Công tác PCTN ở cấp địa phương, ngành chuyên trách chưa rõ rệt, trách nhiệm người đứng đầu chưa cao",
+        "Suy thoái về tư tưởng chính trị, đạo đức, lối sống của một bộ phận cán bộ",
+      ],
+    },
+    sources: {
+      title: "Vụ án Việt Á – Nguồn tham khảo chính thống",
+      badge: "Link ngoài • mở tab mới",
+      links: [
+        {
+          title: "Nhân Dân: Vụ án Việt Á – nâng khống giá kit test…",
+          url: "https://nhandan.vn/vu-an-viet-a-nang-khong-gia-kit-test-gay-thiet-hai-hon-400-ty-dong-cua-nha-nuoc-post790504.html",
+        },
+        {
+          title:
+            "Chính phủ: Đại án Việt Á – truy tố 2 cựu Bộ trưởng cùng 36 bị can",
+          url: "https://xaydungchinhsach.chinhphu.vn/dai-an-viet-a-truy-to-2-cuu-bo-truong-cung-36-bi-can-119230930184729463.htm",
+        },
+      ],
+    },
+    example: {
+      toggle: "Ví dụ thực tế (mở/đóng)",
+      caseTitle: "Vụ án Việt Á – minh họa điển hình",
+      summary:
+        "Lợi dụng chính sách ưu tiên trong dịch bệnh để trục lợi; gây thất thoát ngân sách, méo mó thị trường và hệ luỵ xã hội.",
+      bullets: [
+        "Thiếu kiểm tra, giám sát; buông lỏng quy trình",
+        "Cán bộ, lãnh đạo tiếp tay; đưa/nhận hối lộ",
+        "Ảnh hưởng xấu đến niềm tin của người dân",
+      ],
+    },
+    impacts: {
+      title: "TÁC HẠI CỦA HÀNH VI THAM NHŨNG (TÓM TẮT)",
+      groups: [
+        {
+          label: "Chính trị",
+          points: ["Suy giảm uy tín, hiệu lực của Nhà nước", "Xói mòn niềm tin của nhân dân"],
+        },
+        {
+          label: "Kinh tế",
+          points: ["Thất thoát tài sản, ngân sách", "Làm méo mó thị trường, kìm hãm phát triển"],
+        },
+        {
+          label: "Đạo đức",
+          points: ["Lệch chuẩn giá trị, lối sống", "Gia tăng bất công, suy thoái xã hội"],
+        },
+      ],
+    },
+  },
+  en: {
+    title: "CAUSES OF CORRUPT ACTS",
+    intro:
+      "Causes stem from both subjective (people, organizations) and objective (institutions, governance, socio-economic context) factors. Below is a concise summary.",
+    subjective: {
+      title: "Subjective causes",
+      items: [
+        "Organizational and functional flaws in the political system",
+        "Undefined responsibilities of specialized anti-corruption bodies",
+        "Leaders’ insufficient awareness and example-setting",
+        "Incomplete internal mechanisms, policies and procedures",
+        "Anti-corruption laws not strong enough",
+        "Awareness/communication remains superficial",
+      ],
+    },
+    objective: {
+      title: "Objective causes",
+      items: [
+        "Downside of market economy & globalization",
+        "Policies and laws lack consistency and synchronization",
+        "State management in some sectors is loose and ineffective",
+        "Cadre/party member/civil servant management is limited",
+        "Local AC efforts and accountability of leaders are weak",
+        "Moral degradation of a portion of officials",
+      ],
+    },
+    sources: {
+      title: "Viet A case – Official references",
+      badge: "External links • new tab",
+      links: [
+        {
+          title:
+            "Nhan Dan: Viet A case – inflated test-kit prices causing major state losses",
+          url: "https://nhandan.vn/vu-an-viet-a-nang-khong-gia-kit-test-gay-thiet-hai-hon-400-ty-dong-cua-nha-nuoc-post790504.html",
+        },
+        {
+          title:
+            "Government: Indictment of 2 former ministers and 36 defendants",
+          url: "https://xaydungchinhsach.chinhphu.vn/dai-an-viet-a-truy-to-2-cuu-bo-truong-cung-36-bi-can-119230930184729463.htm",
+        },
+      ],
+    },
+    example: {
+      toggle: "Real-world example (toggle)",
+      caseTitle: "Viet A case – a typical illustration",
+      summary:
+        "Interest groups exploited preferential policies during the pandemic for profit; causing budget losses, market distortion, and social consequences.",
+      bullets: [
+        "Lack of inspection/supervision; loosened procedures",
+        "Officials colluded; bribery and brokerage occurred",
+        "Eroded public trust",
+      ],
+    },
+    impacts: {
+      title: "HARMS OF CORRUPT ACTS (SUMMARY)",
+      groups: [
+        {
+          label: "Politics",
+          points: ["Undermines state legitimacy and effectiveness", "Erodes public trust"],
+        },
+        {
+          label: "Economy",
+          points: ["Resource and budget losses", "Distorts markets, stalls development"],
+        },
+        {
+          label: "Morality",
+          points: ["Value deviation; social decay", "Increases injustice and inequality"],
+        },
+      ],
+    },
+  },
 }
