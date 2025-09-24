@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import Link from 'next/link'; // Import Link từ Next.js
 
 interface HeaderProps {
  language: "vi" | "en"
@@ -47,16 +46,16 @@ export default function Header({ language, setLanguage }: HeaderProps) {
    <div className="max-w-6xl mx-auto px-4 py-4">
     <div className="flex items-center justify-between">
      {/* Logo */}
-     <Link href="/" className="flex items-center space-x-4 cursor-pointer">
+     <div className="flex items-center space-x-4">
       <div className="w-12 h-12 rounded-lg flex items-center justify-center">
        <img src="/logo_app.png" alt="App Logo" className="w-full h-full object-contain" />
       </div>
-     </Link>
+     </div>
 
      {/* Tiêu đề chính */}
-     <Link href="/" className="flex-1 text-center hidden md:block cursor-pointer">
+     <div className="flex-1 text-center hidden md:block">
       <h1 className="text-xl font-bold text-sky-700">{t.title}</h1>
-     </Link>
+     </div>
 
      {/* Chuyển đổi ngôn ngữ */}
      <div className="flex items-center space-x-2">

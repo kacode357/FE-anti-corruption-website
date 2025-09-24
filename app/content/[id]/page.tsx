@@ -13,6 +13,7 @@ import Content3_Consequences from "@/components/Content3_Consequences"
 import Content4_Significance from "@/components/Content4_Significance"
 import Content5_Responsibility from "@/components/Content5_Responsibility"
 import Content6_Actions from "@/components/Content6_Actions"
+import Content7_Harms from "@/components/Content7_Harms" // Thêm component mới
 
 export default function ContentDetail() {
   const params = useParams()
@@ -65,6 +66,13 @@ export default function ContentDetail() {
     case 6:
       ContentComponent = <Content6_Actions language={lang} />
       break
+    case 7: // Thêm case mới cho ID 7
+      ContentComponent = <Content7_Harms language={lang} />
+      break
+    default:
+      ContentComponent = (
+        <div className="text-center text-gray-500">Content not found</div>
+      )
   }
 
   return (
